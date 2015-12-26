@@ -8,8 +8,8 @@ package main
 
 import (
 	"flag"
-	"html/template"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -33,7 +33,7 @@ func echo(w http.ResponseWriter, r *http.Request) {
 		// Just let the conn die...
 		return
 	}
-	go func {
+	go func () {
 		rb := make([]byte, 256)
 		for {
 			n, err := conn.Read(rb)
@@ -41,23 +41,24 @@ func echo(w http.ResponseWriter, r *http.Request) {
 				log.Printf("read local: ", err)
 				break
 			}
-		}
-		err = c.WriteMessage(mt, message)
-		if err != nil {
-			log.Println("write:", err)
-			break
+			err = c.WriteMessage(websocket.BinaryMessage, rb[0:n])
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
 		}
 	} ()
 
 	for {
-		mt, rb, err := c.ReadMessage()
+		_, rb, err := c.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)
 			break
 		}
 		z := 0
+		n := len(rb)
 		for z < n {
-			m, err := os.Stdout.Write(rb[z:n])
+			m, err := conn.Write(rb[z:n])
 			if err != nil {
 				log.Println("conn write:", err)
 				return
