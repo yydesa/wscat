@@ -6,14 +6,15 @@ import (
 	"flag"
 	"log"
 	"net/url"
+	"net/http"
 	"os"
-	//"os/signal"
 
 	"github.com/gorilla/websocket"
 )
 
 var addr = flag.String("addr", "localhost:8080", "http service address")
 var suffix = flag.String("suffix", "", "url suffix")
+var theproxy = flag.String("proxy", "", "proxy server")
 
 func main() {
 	flag.Parse()
@@ -25,7 +26,16 @@ func main() {
 	u := url.URL{Scheme: "ws", Host: *addr, Path: "/webssh"+*suffix}
 	log.Printf("connecting to %s", u.String())
 
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	dl := websocket.DefaultDialer
+	if (*theproxy != "") {
+		u, err := url.Parse(*theproxy)
+		if err != nil {
+			log.Fatal("proxy format:", err)
+		}
+		dl = &websocket.Dialer{ Proxy: http.ProxyURL(u) }
+	}
+
+	c, _, err := dl.Dial(u.String(), nil)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
@@ -52,7 +62,7 @@ func main() {
 				z += m
 			}
 		}
-	}()
+	} ()
 
 	rb := make([]byte, 256)
 	for {
