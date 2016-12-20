@@ -26,6 +26,13 @@ func fwd(w http.ResponseWriter, r *http.Request) {
 		log.Print("upgrade:", err)
 		return
 	}
+
+	log.Println ("Connection from", r.RemoteAddr)
+	ff := r.Header.Get("X-Forwarded-For")
+	if (ff != "") {
+		log.Println ("Forwarded for", ff)
+	}
+
 	defer c.Close()
 
 	conn, err := net.Dial("tcp","localhost:22")
