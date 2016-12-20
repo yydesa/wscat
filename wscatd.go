@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"log"
+	"strings"
 	"net"
 	"net/http"
 
@@ -20,14 +21,14 @@ type errmsg struct {
 	what error;
 };
 
-func fwd(w http.ResponseWriter, r *http.Request) {
+func fwd(w http.ResponseWriter, r *http.Request, addr string) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
 		return
 	}
 
-	log.Println ("Connection from", r.RemoteAddr)
+	log.Println ("Connection from", r.RemoteAddr,"to",addr)
 	ff := r.Header.Get("X-Forwarded-For")
 	if (ff != "") {
 		log.Println ("Forwarded for", ff)
@@ -35,9 +36,9 @@ func fwd(w http.ResponseWriter, r *http.Request) {
 
 	defer c.Close()
 
-	conn, err := net.Dial("tcp","localhost:22")
+	conn, err := net.Dial("tcp",addr)
 	if err != nil {
-		log.Println("connect:", err)
+		log.Println("connect:", addr, err)
 		// Just let the conn die...
 		return
 	}
@@ -112,7 +113,29 @@ func echo(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
-	http.HandleFunc("/webssh", fwd)
+	some := false
+	for _, a := range flag.Args() {
+		i := strings.Index(a,"=")
+		if (i < 0) {
+			log.Fatal ("Bad arg: ", a);
+		}
+		path := a[0:i]
+		targ := a[i+1:len(a)]
+		log.Println("url", path, "to", targ)
+		some = true
+		http.HandleFunc(
+			"/"+path,
+			func (w http.ResponseWriter, r *http.Request) {
+				fwd(w,r,targ)
+			})
+	}
+	if (!some) {
+		http.HandleFunc(
+			"/webssh",
+			func (w http.ResponseWriter, r *http.Request) {
+				fwd(w,r,"localhost:22")
+			})
+	}
 	http.HandleFunc("/echo", echo)
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
