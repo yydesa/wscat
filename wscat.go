@@ -13,7 +13,7 @@ import (
 )
 
 var addr = flag.String("addr", "localhost:8080", "http service address")
-var path = flag.String("path", "webssh", "url suffix")
+var path = flag.String("path", "webssh", "url path base")
 var suffix = flag.String("suffix", "", "url suffix")
 var theproxy = flag.String("proxy", "", "proxy server")
 var plain = flag.Bool("insecure", false, "no ssl")
