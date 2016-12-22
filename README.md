@@ -65,8 +65,9 @@ base path, otherwise it is easier all put into
 `--path`.
 
 `--proxy host:port` allows to specify a proxy
-to use, according to `http.Proxy` and `url.Parse`
-of golang, e.g. `--proxy http://localhost:3128`.
+to use, according to `http.ProxyURL` and `url.Parse`
+of golang, e.g. `--proxy http://localhost:3128`
+(socks(5) seems not to be supported?)
 
 `--plain` causes wscat to use `ws://` instead
 of `wss://`, losing the SSL security properties.
