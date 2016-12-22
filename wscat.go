@@ -70,7 +70,7 @@ func main() {
 		}
 	} ()
 
-	rb := make([]byte, 256)
+	rb := make([]byte, 8200)
 	for {
 		n, err := os.Stdin.Read(rb)
 		if err != nil {
