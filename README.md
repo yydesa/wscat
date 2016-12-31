@@ -69,7 +69,7 @@ to use, according to `http.ProxyURL` and `url.Parse`
 of golang, e.g. `--proxy http://localhost:3128`
 (socks(5) seems not to be supported?)
 
-`--plain` causes wscat to use `ws://` instead
+`--insecure` causes wscat to use `ws://` instead
 of `wss://`, losing the SSL security properties.
 (With SSL you get verification that you talk to
 the correct host, and can more lightheartedly
