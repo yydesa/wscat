@@ -33,6 +33,10 @@ func fwd(w http.ResponseWriter, r *http.Request, addr string) {
 	if (ff != "") {
 		log.Println ("Forwarded for", ff)
 	}
+	ri := r.Header.Get("X-Real-IP")
+	if (ri != "") {
+		log.Println ("Real IP", ri)
+	}
 
 	defer c.Close()
 
