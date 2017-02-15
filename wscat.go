@@ -30,7 +30,7 @@ func main() {
 		scheme = "ws";
 	}
 	u := url.URL{Scheme: scheme, Host: *addr, Path: "/"+*path+*suffix}
-	log.Printf("connecting to %s", u.String())
+	log.Printf("[%s]", u.String())
 
 	dl := websocket.DefaultDialer
 	if (*theproxy != "") {
