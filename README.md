@@ -46,8 +46,8 @@ You will also need a keepalive in the ssh client.
 
 In putty, you need to enter the full `wscat` command
 at 'Telnet command' and select 'Local', both in
-the Proxy panel. (And do not have a `\t` in the
-path - putty (0.67) does not like that.)
+the Proxy panel. (And you need to escape `\` in the
+windows path as `\\` because putty.)
 
 ## wscat
 
