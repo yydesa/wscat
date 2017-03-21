@@ -25,6 +25,8 @@ to have port 22 open in any firewall on the way.
 The default path `wscat` uses is `/webssh`,
 because of the scenario above.
 
+### nginx
+
 For example, setting up forwarding in nginx
 is like this, in a server clause (with `wscatd`
 listening on port 8080 which is its default):
@@ -39,6 +41,8 @@ listening on port 8080 which is its default):
   }
 ```
 You will also need a keepalive in the ssh client.
+
+### putty
 
 In putty, you need to enter the full `wscat` command
 at 'Telnet command' and select 'Local', both in
