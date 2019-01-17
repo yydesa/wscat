@@ -17,6 +17,7 @@ var path = flag.String("path", "webssh", "url path base")
 var suffix = flag.String("suffix", "", "url suffix")
 var theproxy = flag.String("proxy", "", "proxy server")
 var plain = flag.Bool("insecure", false, "no ssl")
+var verbose = flag.Bool("verbose", false, "verbose mode")
 
 func main() {
 	flag.Parse()
