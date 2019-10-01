@@ -25,23 +25,6 @@ to have port 22 open in any firewall on the way.
 The default path `wscat` uses is `/webssh`,
 because of the scenario above.
 
-### nginx
-
-For example, setting up forwarding in nginx
-is like this, in a server clause (with `wscatd`
-listening on port 8080 which is its default):
-```
-  location /webssh {
-    proxy_pass http://127.0.0.1:8080;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "Upgrade";
-
-    proxy_read_timeout 600s;
-  }
-```
-You will also need a keepalive in the ssh client.
-
 ### putty
 
 In putty, you need to enter the full `wscat` command
@@ -99,3 +82,25 @@ to listen on, e.g. `--addr myhost:1234`.
 
 `wscatd` itself does not provide SSL termination;
 you need to do that in the reverse-proxying webserver.
+
+You want a reverse proxy in front of `wscatd` anyway
+if you want anything else responding on the http port,
+especially if this is just a firewall-capable access
+to a web server.
+
+### nginx
+
+For example, setting up forwarding in nginx
+is like this, in a server clause (with `wscatd`
+listening on port 8080 which is its default):
+```
+  location /webssh {
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+
+    proxy_read_timeout 600s;
+  }
+```
+You will also need a keepalive in the ssh client.
