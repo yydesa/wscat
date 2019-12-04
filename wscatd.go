@@ -14,6 +14,8 @@ import (
 
 var addr = flag.String("addr", "localhost:8080", "http service address")
 
+var docroot = flag.String("path", ".", "http root directory")
+
 var upgrader = websocket.Upgrader{} // use default options
 
 type errmsg struct {
@@ -140,6 +142,11 @@ func main() {
 				fwd(w,r,"localhost:22")
 			})
 	}
-	http.HandleFunc("/echo", echo)
+	if *docroot != "" {
+		fs := http.FileServer(http.Dir(*docroot))
+		http.Handle("/", fs)
+	} else {
+		http.HandleFunc("/echo", echo)
+	}
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
